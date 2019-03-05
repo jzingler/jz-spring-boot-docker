@@ -1,11 +1,11 @@
-FROM ubuntu:bionic
+FROM amazonlinux:1
 
 RUN mkdir cloud-security-provider
 
-RUN apt-get update && apt-get install --no-install-recommends -y \
-    ca-cacert \
-    curl \
- && rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && apt-get install --no-install-recommends -y \
+#     ca-cacert \
+#     curl \
+#  && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /java \
  && cd /java \
