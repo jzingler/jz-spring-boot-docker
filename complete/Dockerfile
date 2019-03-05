@@ -18,9 +18,13 @@ ADD start.sh start.sh
 RUN chmod 755 start.sh
 
 VOLUME /tmp
-COPY target/classes/BOOT-INF/lib/container-security-provider-1.16.0_RELEASE.jar /cloud-security-provider/container-security-provider-1.16.0_RELEASE.jar
-COPY target/classes/java.security /cloud-security-provider/java.security
-COPY target/app-0.1.0.jar app.jar
+ARG DEPENDENCY=target/dependency
+COPY ${DEPENDENCY}/BOOT-INF/lib/container-security-provider-1.16.0_RELEASE.jar /cloud-security-provider/container-security-provider-1.16.0_RELEASE.jar
+COPY ${DEPENDENCY}/BOOT-INF/classes/java.security /cloud-security-provider/java.security
+COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
+COPY ${DEPENDENCY}/META-INF /app/META-INF
+COPY ${DEPENDENCY}/BOOT-INF/classes /app
 ENV SERVER_PORT 8080
+ENV LD_LIBRARY_PATH /opt/cloudhsm/lib
 EXPOSE ${SERVER_PORT}
 CMD ["./start.sh"]
