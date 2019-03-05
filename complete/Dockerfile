@@ -1,8 +1,5 @@
 FROM ubuntu:bionic
-VOLUME /tmp
-ARG DEPENDENCY=target/dependency
-ARG JAVA_OPTS
-ENV JAVA_OPTS=$JAVA_OPTS
+
 RUN mkdir cloud-security-provider
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -17,14 +14,13 @@ RUN mkdir /java \
 ENV JAVA_HOME=/java
 ENV PATH=${PATH}:${JAVA_HOME}/bin
 
-COPY ${DEPENDENCY}/BOOT-INF/lib/container-security-provider-1.16.0_RELEASE.jar   /cloud-security-provider/container-security-provider-1.16.0_RELEASE.jar
-COPY ${DEPENDENCY}//BOOT-INF/classes/java.security /cloud-security-provider/java.security
-COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY ${DEPENDENCY}/META-INF /app/META-INF
-COPY ${DEPENDENCY}/BOOT-INF/classes /app
+ADD start.sh start.sh
+RUN chmod 755 start.sh
 
-
-ENTRYPOINT exec java $JAVA_OPTS \
-    -Djava.ext.dirs=/cloud-security-provider:${JAVA_HOME}/lib/ext \
-    -Djava.security.properties=/cloud-security-provider/java.security \
-    -cp app:app/lib/* hello.Application
+VOLUME /tmp
+COPY target/classes/BOOT-INF/lib/container-security-provider-1.16.0_RELEASE.jar /cloud-security-provider/container-security-provider-1.16.0_RELEASE.jar
+COPY target/classes/java.security /cloud-security-provider/java.security
+COPY target/app-0.1.0.jar app.jar
+ENV SERVER_PORT 8080
+EXPOSE ${SERVER_PORT}
+CMD ["./start.sh"]

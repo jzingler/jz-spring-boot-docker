@@ -12,6 +12,7 @@ public class Application {
 
     @RequestMapping("/")
     public String home() {
+        System.out.println("Hitting REST endpoint");
         RestTemplate rt = new RestTemplate();
         rt.getForObject("https://pivotal.io", String.class);
         return "Hello Docker World";
